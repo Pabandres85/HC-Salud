@@ -1,0 +1,48 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Database=psicologia;Username=postgres;Password=postgres
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: psicologia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  ai_service:
+    build: ./ai_service
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./ai_service/models:/app/models
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
