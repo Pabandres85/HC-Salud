@@ -439,7 +439,7 @@ python -m pytest --cov=app
 
 ## 🏆 Contribuidores
 
-- **Desarrollador Principal**: Tu Nombre
+- **Desarrollador Principal**: Pablo Andres Muñoz
 - **Frontend**: Angular Team
 - **Backend**: .NET Team
 - **AI/ML**: Python Team
@@ -448,8 +448,8 @@ python -m pytest --cov=app
 
 Para soporte técnico o preguntas:
 
-- **Email**: soporte@psicologia-historia-clinica.com
-- **Issues**: Crear un issue en GitHub
+- **Email**: ingenieropabloandres0@gmail.com
+- **Issues**: pendiente
 - **Documentación**: [Wiki del proyecto](./wiki)
 
 ## 📄 Licencia
