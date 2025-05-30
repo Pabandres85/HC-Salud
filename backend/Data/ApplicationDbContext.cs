@@ -9,6 +9,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Paciente> Pacientes { get; set; }
+    public DbSet<HistoriaClinica> HistoriasClinicas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,5 +80,40 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Paciente>()
             .HasIndex(p => p.Correo)
             .IsUnique();
+
+        // Configurar Entity Framework para mapear la entidad HistoriaClinica a la tabla 'historiasclinicas' y sus columnas
+        modelBuilder.Entity<HistoriaClinica>()
+            .ToTable("historiasclinicas")
+            .Property(h => h.Id).HasColumnName("id");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.PacienteId).HasColumnName("pacienteid");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.FechaConsulta).HasColumnName("fechaconsulta");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.Subjetivo).HasColumnName("subjetivo");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.Objetivo).HasColumnName("objetivo");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.Analisis).HasColumnName("analisis");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.Plan).HasColumnName("plan");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.CreadoEn).HasColumnName("creadoen");
+
+        modelBuilder.Entity<HistoriaClinica>()
+            .Property(h => h.ActualizadoEn).HasColumnName("actualizadoen");
+
+        // Configurar la relación entre HistoriaClinica y Paciente
+        modelBuilder.Entity<HistoriaClinica>()
+            .HasOne(h => h.Paciente)
+            .WithMany()
+            .HasForeignKey(h => h.PacienteId);
     }
 }

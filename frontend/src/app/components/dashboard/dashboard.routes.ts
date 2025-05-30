@@ -22,6 +22,22 @@ export const DASHBOARD_ROUTES: Routes = [
             {
                 path: 'perfil',
                 loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
+            },
+            {
+                path: 'pacientes/:id/historias-clinicas',
+                loadComponent: () => import('./pages/historias-clinicas/historia-clinica-list.component').then(m => m.HistoriaClinicaListComponent)
+            },
+            {
+                path: 'pacientes/:pacienteId/historias-clinicas/nueva',
+                loadComponent: () => import('./pages/historias-clinicas/historia-clinica-form.component').then(m => m.HistoriaClinicaFormComponent)
+            },
+            {
+                path: 'historias-clinicas/:id/editar',
+                loadComponent: () => import('./pages/historias-clinicas/historia-clinica-form.component').then(m => m.HistoriaClinicaFormComponent)
+            },
+            {
+                path: 'historias-clinicas/:id',
+                loadComponent: () => import('./pages/historias-clinicas/historia-clinica-detail.component').then(m => m.HistoriaClinicaDetailComponent)
             }
         ]
     }

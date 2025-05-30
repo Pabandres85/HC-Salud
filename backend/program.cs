@@ -28,6 +28,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 // Inyección de dependencias
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PacienteService>();
+builder.Services.AddTransient<HistoriaClinicaService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -101,6 +102,24 @@ using (var scope = app.Services.CreateScope())
     {
         app.Logger.LogError(ex, "Error al conectar con la base de datos");
         throw;
+    }
+}
+
+// Añadir lógica para aplicar migraciones si el argumento --migrate está presente
+if (args.Contains("--migrate"))
+{
+    Console.WriteLine("Aplicando migraciones de base de datos...");
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        // Aplicar migraciones pendientes
+        dbContext.Database.Migrate();
+    }
+    Console.WriteLine("Migraciones aplicadas.");
+    // Salir si solo se pidió aplicar migraciones
+    if (args.Length == 1 && args.Contains("--migrate"))
+    {
+        return; 
     }
 }
 

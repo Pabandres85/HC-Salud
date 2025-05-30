@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Paciente, PacienteRequest, PacientesResponse } from '../../../../models/paciente.models';
 import { PacienteService } from '../../../../services/paciente.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-pacientes',
@@ -42,6 +43,7 @@ import { PacienteService } from '../../../../services/paciente.service';
                             <td>
                                 <button (click)="editarPaciente(paciente)" class="pacientes-btn-link">Editar</button>
                                 <button (click)="eliminarPaciente(paciente.id)" class="pacientes-btn-link pacientes-btn-link-danger">Eliminar</button>
+                                <button (click)="verHistoriasClinicas(paciente.id)" class="pacientes-btn-link">Historias Clínicas</button>
                             </td>
                         </tr>
                         <tr *ngIf="pacientes.length === 0">
@@ -268,7 +270,8 @@ export class PacientesComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private pacienteService: PacienteService
+        private pacienteService: PacienteService,
+        private router: Router
     ) {
         this.pacienteForm = this.fb.group({
             nombreCompleto: ['', [Validators.required]],
@@ -400,5 +403,9 @@ export class PacientesComponent implements OnInit {
 
     formatearFecha(fecha: Date): string {
         return new Date(fecha).toISOString().split('T')[0];
+    }
+
+    verHistoriasClinicas(pacienteId: number) {
+        this.router.navigate(['/dashboard/pacientes', pacienteId, 'historias-clinicas']);
     }
 } 

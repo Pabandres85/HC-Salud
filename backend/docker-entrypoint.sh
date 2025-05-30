@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Iniciar la aplicación
-echo "Iniciando la aplicación..."
+# Esperar a que la base de datos esté disponible y aplicar migraciones
+echo "Aplicando migraciones de base de datos..."
+until dotnet Backend.dll --migrate;
+do
+    echo "Base de datos no disponible o error al aplicar migraciones, reintentando..."
+    sleep 5
+done
 
-# Agregar un pequeño retardo para asegurar que la BD esté completamente lista
-echo "Esperando 5 segundos para asegurar que la BD esté lista..."
-sleep 5
-
+# Iniciar la aplicación principal
+echo "Migraciones aplicadas. Iniciando la aplicación principal..."
 exec dotnet Backend.dll 
