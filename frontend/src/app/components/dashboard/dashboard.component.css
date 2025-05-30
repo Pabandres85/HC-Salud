@@ -1,0 +1,494 @@
+/* Estilos para el contenedor principal del dashboard */
+.min-h-screen {
+    min-height: 100vh;
+    background-color: #f3f4f6; /* gray-100 */
+}
+
+/* Estilos para la barra de navegación (header) */
+nav {
+    background-color: #ffffff; /* white */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+    position: relative;
+    z-index: 10;
+}
+
+/* Contenedor interno con ancho máximo y centrado */
+nav .max-w-7xl {
+    max-width: 80rem; /* max-w-7xl */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+}
+
+/* En pantallas medianas y grandes */
+@media (min-width: 640px) { /* sm */
+    nav .sm\:px-6 {
+        padding-left: 1.5rem; /* sm:px-6 */
+        padding-right: 1.5rem; /* sm:px-6 */
+    }
+}
+
+@media (min-width: 1024px) { /* lg */
+    nav .lg\:px-8 {
+        padding-left: 2rem; /* lg:px-8 */
+        padding-right: 2rem; /* lg:px-8 */
+    }
+}
+
+/* Flex container para los elementos del header */
+nav .flex {
+    display: flex;
+}
+
+nav .items-center {
+    align-items: center;
+}
+
+nav .justify-between {
+    justify-content: space-between;
+}
+
+nav .h-16 {
+    height: 4rem; /* h-16 */
+}
+
+/* Logo o título del sitio */
+nav .flex-shrink-0 {
+    flex-shrink: 0;
+}
+
+nav h1.text-2xl {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    color: #1f2937; /* gray-900 */
+}
+
+/* Enlaces de navegación principal (desktop) */
+nav .hidden {
+    display: none;
+}
+
+@media (min-width: 640px) { /* sm */
+    nav .sm\:ml-6 {
+        margin-left: 1.5rem; /* sm:ml-6 */
+    }
+    nav .sm\:flex {
+        display: flex;
+    }
+    nav .sm\:space-x-8 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 0;
+        margin-right: calc(2rem * var(--tw-space-x-reverse)); /* sm:space-x-8 */
+        margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse))); /* sm:space-x-8 */
+    }
+}
+
+nav .border-transparent {
+    border-color: transparent;
+}
+
+nav .text-gray-500 {
+    color: #6b7280; /* gray-500 */
+}
+
+nav .hover\:border-gray-300:hover {
+    border-color: #d1d5db; /* hover:border-gray-300 */
+}
+
+nav .hover\:text-gray-700:hover {
+    color: #374151; /* hover:text-gray-700 */
+}
+
+nav .inline-flex {
+    display: inline-flex;
+}
+
+nav .items-center {
+    align-items: center;
+}
+
+nav .px-1 {
+    padding-left: 0.25rem; /* px-1 */
+    padding-right: 0.25rem; /* px-1 */
+}
+
+nav .pt-1 {
+    padding-top: 0.25rem; /* pt-1 */
+}
+
+nav .border-b-2 {
+    border-bottom-width: 2px;
+}
+
+nav .text-sm {
+    font-size: 0.875rem; /* text-sm */
+}
+
+nav .font-medium {
+    font-weight: 500;
+}
+
+/* Estado activo del enlace de navegación (desktop) */
+nav a.border-indigo-500 {
+    border-color: #6366f1; /* border-indigo-500 */
+}
+
+nav a.text-gray-900 {
+    color: #1f2937; /* text-gray-900 */
+}
+
+
+/* Botón de menú móvil y área de usuario (mobile) */
+nav .-mr-2 {
+    margin-right: -0.5rem; /* -mr-2 */
+}
+
+@media (min-width: 640px) { /* sm */
+     nav .sm\:hidden {
+        display: none; /* sm:hidden */
+     }
+}
+
+nav button.inline-flex {
+    display: inline-flex;
+}
+
+nav button.items-center {
+    align-items: center;
+}
+
+nav button.justify-center {
+    justify-content: center;
+}
+
+nav button.p-2 {
+    padding: 0.5rem; /* p-2 */
+}
+
+nav button.rounded-md {
+    border-radius: 0.375rem; /* rounded-md */
+}
+
+nav button.text-gray-400 {
+    color: #9ca3af; /* gray-400 */
+}
+
+nav button.hover\:text-gray-500:hover {
+    color: #6b7280; /* hover:text-gray-500 */
+}
+
+nav button.hover\:bg-gray-100:hover {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+nav button.focus\:outline-none:focus {
+    outline: 2px solid transparent; /* focus:outline-none */
+    outline-offset: 2px;
+}
+
+nav button.focus\:ring-2:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000); /* focus:ring-2 */
+}
+
+nav button.focus\:ring-inset:focus {
+    --tw-ring-inset: inset; /* focus:ring-inset */
+}
+
+nav button.focus\:ring-indigo-500:focus {
+    --tw-ring-color: #6366f1; /* focus:ring-indigo-500 */
+}
+
+
+nav .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+nav svg.block {
+    display: block;
+}
+
+nav svg.hidden {
+    display: none;
+}
+
+nav svg.h-6 {
+    height: 1.5rem; /* h-6 */
+}
+
+nav svg.w-6 {
+    width: 1.5rem; /* w-6 */
+}
+
+
+/* Información de usuario y botón de logout (desktop) */
+@media (min-width: 640px) { /* sm */
+     nav .sm\:ml-6 {
+        margin-left: 1.5rem; /* sm:ml-6 */
+     }
+     nav .sm\:flex {
+         display: flex;
+     }
+     nav .sm\:items-center {
+         align-items: center;
+     }
+}
+
+nav span.text-gray-700 {
+    color: #374151; /* gray-700 */
+}
+
+nav span.font-semibold {
+    font-weight: 600;
+}
+
+nav span.mr-3 {
+    margin-right: 0.75rem; /* mr-3 */
+}
+
+nav button.bg-red-600 {
+    background-color: #dc2626; /* red-600 */
+}
+
+nav button.hover\:bg-red-700:hover {
+    background-color: #b91c1c; /* hover:bg-red-700 */
+}
+
+nav button.text-white {
+    color: #ffffff; /* text-white */
+}
+
+nav button.px-3 {
+    padding-left: 0.75rem; /* px-3 */
+    padding-right: 0.75rem; /* px-3 */
+}
+
+nav button.py-1 {
+    padding-top: 0.25rem; /* py-1 */
+    padding-bottom: 0.25rem; /* py-1 */
+}
+
+nav button.rounded-md {
+    border-radius: 0.375rem; /* rounded-md */
+}
+
+nav button.text-sm {
+    font-size: 0.875rem; /* text-sm */
+}
+
+nav button.font-medium {
+    font-weight: 500;
+}
+
+nav button.focus\:outline-none:focus {
+    outline: 2px solid transparent; /* focus:outline-none */
+    outline-offset: 2px;
+}
+
+nav button.focus\:ring-2:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000); /* focus:ring-2 */
+}
+
+nav button.focus\:ring-offset-2:focus {
+    --tw-ring-offset-width: 2px; /* focus:ring-offset-2 */
+}
+
+nav button.focus\:ring-red-500:focus {
+    --tw-ring-color: #ef4444; /* focus:ring-red-500 */
+}
+
+
+/* Menú móvil (visible solo en móvil) */
+nav .sm\:hidden#mobile-menu {
+     display: block; /* Por defecto visible en móvil */
+}
+
+@media (min-width: 640px) { /* sm */
+    nav .sm\:hidden#mobile-menu {
+        display: none; /* Ocultar en sm y superior */
+    }
+}
+
+nav .pt-2 {
+    padding-top: 0.5rem; /* pt-2 */
+}
+
+nav .pb-3 {
+    padding-bottom: 0.75rem; /* pb-3 */
+}
+
+nav .space-y-1 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse))); /* space-y-1 */
+    margin-bottom: calc(0.25rem * var(--tw-space-y-reverse)); /* space-y-1 */
+}
+
+
+/* Enlaces del menú móvil */
+nav .sm\:hidden#mobile-menu a.block {
+    display: block;
+}
+
+nav .sm\:hidden#mobile-menu a.pl-3 {
+    padding-left: 0.75rem; /* pl-3 */
+}
+
+nav .sm\:hidden#mobile-menu a.pr-4 {
+    padding-right: 1rem; /* pr-4 */
+}
+
+nav .sm\:hidden#mobile-menu a.py-2 {
+    padding-top: 0.5rem; /* py-2 */
+    padding-bottom: 0.5rem; /* py-2 */
+}
+
+nav .sm\:hidden#mobile-menu a.border-l-4 {
+    border-left-width: 4px;
+}
+
+nav .sm\:hidden#mobile-menu a.text-base {
+    font-size: 1rem; /* text-base */
+}
+
+nav .sm\:hidden#mobile-menu a.font-medium {
+    font-weight: 500;
+}
+
+/* Estado activo del enlace de menú móvil */
+nav .sm\:hidden#mobile-menu a.bg-indigo-50 {
+    background-color: #eef2ff; /* bg-indigo-50 */
+}
+
+nav .sm\:hidden#mobile-menu a.border-indigo-500 {
+    border-color: #6366f1; /* border-indigo-500 */
+}
+
+nav .sm\:hidden#mobile-menu a.text-indigo-700 {
+    color: #4338ca; /* indigo-700 */
+}
+
+
+/* Sección de usuario en menú móvil */
+nav .pt-4 {
+    padding-top: 1rem; /* pt-4 */
+}
+
+nav .pb-3 {
+    padding-bottom: 0.75rem; /* pb-3 */
+}
+
+nav .border-t {
+    border-top-width: 1px;
+}
+
+nav .border-gray-200 {
+    border-color: #e5e7eb; /* gray-200 */
+}
+
+nav .px-5 {
+    padding-left: 1.25rem; /* px-5 */
+    padding-right: 1.25rem; /* px-5 */
+}
+
+nav .ml-3 {
+    margin-left: 0.75rem; /* ml-3 */
+}
+
+nav .text-gray-800 {
+     color: #1f2937; /* gray-800 */
+}
+
+nav .mt-3 {
+    margin-top: 0.75rem; /* mt-3 */
+}
+
+nav .px-2 {
+    padding-left: 0.5rem; /* px-2 */
+    padding-right: 0.5rem; /* px-2 */
+}
+
+
+/* Botón de logout en menú móvil */
+nav .sm\:hidden#mobile-menu button.block {
+     display: block;
+}
+
+nav .sm\:hidden#mobile-menu button.px-3 {
+    padding-left: 0.75rem; /* px-3 */
+    padding-right: 0.75rem; /* px-3 */
+}
+
+nav .sm\:hidden#mobile-menu button.py-2 {
+    padding-top: 0.5rem; /* py-2 */
+    padding-bottom: 0.5rem; /* py-2 */
+}
+
+nav .sm\:hidden#mobile-menu button.rounded-md {
+    border-radius: 0.375rem; /* rounded-md */
+}
+
+nav .sm\:hidden#mobile-menu button.text-base {
+    font-size: 1rem; /* text-base */
+}
+
+nav .sm\:hidden#mobile-menu button.font-medium {
+    font-weight: 500;
+}
+
+nav .sm\:hidden#mobile-menu button.text-gray-500 {
+     color: #6b7280; /* gray-500 */
+}
+
+nav .sm\:hidden#mobile-menu button.hover\:text-gray-800:hover {
+    color: #1f2937; /* hover:text-gray-800 */
+}
+
+nav .sm\:hidden#mobile-menu button.hover\:bg-gray-100:hover {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+/* Estilos para el contenido principal (main) */
+main .max-w-7xl {
+    max-width: 80rem; /* max-w-7xl */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+}
+
+main .py-6 {
+    padding-top: 1.5rem; /* py-6 */
+    padding-bottom: 1.5rem; /* py-6 */
+}
+
+@media (min-width: 640px) { /* sm */
+    main .sm\:px-6 {
+        padding-left: 1.5rem; /* sm:px-6 */
+        padding-right: 1.5rem; /* sm:px-6 */
+    }
+}
+
+@media (min-width: 1024px) { /* lg */
+    main .lg\:px-8 {
+        padding-left: 2rem; /* lg:px-8 */
+        padding-right: 2rem; /* lg:px-8 */
+    }
+}
+
+/*
+   Nota: La visibilidad del menú móvil (clases hidden y sm:hidden en el HTML)
+   está controlada por las clases CSS que hemos definido aquí basándonos en los media queries.
+   Si necesitas togglear el menú con JavaScript, deberás añadir clases
+   adicionales que modifiquen la propiedad 'display'.
+*/ 

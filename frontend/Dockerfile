@@ -1,5 +1,5 @@
 # Etapa de construcción
-FROM node:18 AS build
+FROM node:18.20.0 AS build
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY angular.json ./
 COPY tsconfig*.json ./
 
 # Instalar dependencias
-RUN npm ci
+RUN npm install
 
 # Copiar código fuente
 COPY src/ ./src/

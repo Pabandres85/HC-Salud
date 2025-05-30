@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   frontend:
     build: ./frontend
@@ -6,43 +8,53 @@ services:
     depends_on:
       - backend
     networks:
-      - app-network
+      - psicologia-network
 
   backend:
     build: ./backend
     ports:
       - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=db;Database=psicologia;Username=postgres;Password=postgres
-    depends_on:
-      - db
     networks:
-      - app-network
+      - psicologia-network
 
   db:
     image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_DB: psicologia
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_DB=psicologia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d:ro
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres && psql -U postgres -d psicologia -c 'SELECT 1'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
-      - app-network
+      - psicologia-network
 
   ai_service:
     build: ./ai_service
     ports:
       - "7000:7000"
-    volumes:
-      - ./ai_service/models:/app/models
+    depends_on:
+      - backend
     networks:
-      - app-network
+      - psicologia-network
 
 networks:
-  app-network:
+  psicologia-network:
     driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
