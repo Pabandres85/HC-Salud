@@ -75,7 +75,7 @@ public class PacienteService
         var paciente = new Paciente
         {
             NombreCompleto = request.NombreCompleto,
-            FechaNacimiento = request.FechaNacimiento,
+            FechaNacimiento = request.FechaNacimiento.ToUniversalTime(),
             Genero = request.Genero,
             Direccion = request.Direccion,
             Telefono = request.Telefono,
@@ -113,7 +113,7 @@ public class PacienteService
             return null;
 
         paciente.NombreCompleto = request.NombreCompleto;
-        paciente.FechaNacimiento = request.FechaNacimiento;
+        paciente.FechaNacimiento = request.FechaNacimiento.ToUniversalTime();
         paciente.Genero = request.Genero;
         paciente.Direccion = request.Direccion;
         paciente.Telefono = request.Telefono;

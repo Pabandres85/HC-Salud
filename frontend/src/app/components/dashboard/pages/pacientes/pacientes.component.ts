@@ -196,9 +196,9 @@ import { PacienteService } from '../../../../services/paciente.service';
             background: #fff;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
-            padding: 2rem 1.5rem;
-            max-width: 480px;
-            width: 100%;
+            padding: 2rem 2rem;
+            max-width: 600px;
+            width: 90%;
         }
         .pacientes-modal h3 {
             font-size: 1.3rem;
@@ -335,32 +335,39 @@ export class PacientesComponent implements OnInit {
     }
 
     guardarPaciente() {
-        if (this.pacienteForm.valid) {
-            const pacienteData: PacienteRequest = this.pacienteForm.value;
-            
-            if (this.pacienteSeleccionado) {
-                this.pacienteService.actualizarPaciente(this.pacienteSeleccionado.id, pacienteData)
-                    .subscribe({
-                        next: () => {
-                            this.cerrarModal();
-                            this.cargarPacientes();
-                        },
-                        error: (error) => {
-                            console.error('Error al actualizar paciente:', error);
-                        }
-                    });
-            } else {
-                this.pacienteService.crearPaciente(pacienteData)
-                    .subscribe({
-                        next: () => {
-                            this.cerrarModal();
-                            this.cargarPacientes();
-                        },
-                        error: (error) => {
-                            console.error('Error al crear paciente:', error);
-                        }
-                    });
-            }
+        if (this.pacienteForm.invalid) {
+            console.error('Formulario inválido');
+            return;
+        }
+
+        const pacienteData: PacienteRequest = this.pacienteForm.value;
+
+        if (this.pacienteSeleccionado) {
+            this.pacienteService.actualizarPaciente(this.pacienteSeleccionado.id, pacienteData)
+                .subscribe(
+                    (response) => {
+                        console.log('Paciente actualizado con éxito', response);
+                        this.cargarPacientes();
+                        this.cerrarModal();
+                    },
+                    (error) => {
+                        console.error('Error al actualizar paciente', error);
+                        // TODO: Mostrar feedback de error en la UI
+                    }
+                );
+        } else {
+            this.pacienteService.crearPaciente(pacienteData)
+                .subscribe(
+                    (response) => {
+                        console.log('Paciente creado con éxito', response);
+                        this.cargarPacientes();
+                        this.cerrarModal();
+                    },
+                    (error) => {
+                        console.error('Error al crear paciente', error);
+                        // TODO: Mostrar feedback de error en la UI
+                    }
+                );
         }
     }
 

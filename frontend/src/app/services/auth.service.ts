@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthResponse, LoginRequest, RegistroRequest, RegistroResponse } from '../models/auth.models';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
     private currentUserSubject = new BehaviorSubject<AuthResponse | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private router: Router) {
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
             this.currentUserSubject.next(JSON.parse(storedUser));
@@ -35,6 +36,7 @@ export class AuthService {
     logout(): void {
         localStorage.removeItem('currentUser');
         this.currentUserSubject.next(null);
+        this.router.navigate(['/login']);
     }
 
     getToken(): string | null {
