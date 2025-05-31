@@ -88,5 +88,21 @@ namespace Backend.Controllers
             }
             return NoContent();
         }
+
+        // Nuevo endpoint para obtener todas las citas (general)
+        [HttpGet]
+        public async Task<ActionResult<PaginatedResponse<CitaResponse>>> GetAllCitas([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var citas = await _citaService.GetAllCitasAsync(pageNumber, pageSize);
+                return Ok(citas);
+            }
+            catch (Exception ex)
+            {
+                // Considera un logging más robusto aquí
+                return StatusCode(500, new { message = "Error al obtener todas las citas: " + ex.Message });
+            }
+        }
     }
 } 

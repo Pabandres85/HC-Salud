@@ -321,7 +321,8 @@ export class CitaFormComponent implements OnInit {
         if (this.pacienteId !== null) {
              // Navegar de regreso a la vista integral o a la lista de citas si existe una ruta dedicada
             // Asumiendo una ruta como /dashboard/pacientes/:pacienteId/citas
-            this.router.navigate(['/dashboard/pacientes', this.pacienteId, 'citas']);
+            // Ahora navegaremos al dashboard principal para forzar la recarga de contadores
+            this.router.navigate(['/dashboard/inicio']);
         }
     }
 

@@ -111,12 +111,16 @@ namespace Backend.Services
         // Método para obtener citas para una fecha específica (para el dashboard)
         public async Task<int> GetCitasForDateAsync(DateTime date)
         {
-            // Normalizar la fecha para comparar solo el día
-            var startOfDay = date.Date.ToUniversalTime();
-            var endOfDay = startOfDay.AddDays(1);
+            // Calcular el inicio y fin del día actual en UTC
+            var startOfTodayUtc = DateTime.UtcNow.Date; // Obtiene la fecha actual en UTC y establece la hora a 00:00:00Z
+            var endOfTodayUtc = startOfTodayUtc.AddDays(1); // El inicio de mañana en UTC
 
+            // Log para depuración
+            Console.WriteLine($"[CitaService] Calculando citas para rango UTC: {startOfTodayUtc:o} a {endOfTodayUtc:o}"); // Usar formato 'o' para ISO 8601 con zona horaria
+
+            // Contar las citas cuya FechaHora (que está en UTC) cae dentro del rango UTC del día actual
             return await _context.Citas
-                                 .CountAsync(c => c.FechaHora >= startOfDay && c.FechaHora < endOfDay);
+                                 .CountAsync(c => c.FechaHora >= startOfTodayUtc && c.FechaHora < endOfTodayUtc);
         }
 
         // Método para actualizar una cita
@@ -169,6 +173,40 @@ namespace Backend.Services
             _context.Citas.Remove(cita);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        // Método para obtener todas las citas con información del paciente (con paginación)
+        public async Task<PaginatedResponse<CitaResponse>> GetAllCitasAsync(int pageNumber, int pageSize)
+        {
+            var query = _context.Citas
+                .Include(c => c.Paciente) // Incluir la información del paciente
+                .OrderBy(c => c.FechaHora); // Opcional: ordenar por fecha/hora por defecto
+
+            var totalItems = await query.CountAsync();
+            var citas = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var data = citas.Select(c => new CitaResponse
+            {
+                Id = c.Id,
+                PacienteId = c.PacienteId,
+                PacienteNombreCompleto = c.Paciente?.NombreCompleto, // Incluir nombre del paciente
+                FechaHora = c.FechaHora,
+                Motivo = c.Motivo,
+                Estado = c.Estado,
+                CreadoEn = c.CreadoEn,
+                ActualizadoEn = c.ActualizadoEn
+            }).ToList();
+
+            return new PaginatedResponse<CitaResponse>
+            {
+                Data = data,
+                Total = totalItems,
+                Page = pageNumber,
+                PageSize = pageSize
+            };
         }
     }
 } 

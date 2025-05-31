@@ -227,12 +227,12 @@ python app.py
 ### **🟡 En Progreso**
 
 - 🔄 **Frontend**
-  - Mejoras en la UI/UX
-  - Optimización de rendimiento
-  - Implementación de más funcionalidades del dashboard
+  - Mejoras en la UI/UX (Continuo)
+  - Optimización de rendimiento (Continuo)
+  - Implementación de más funcionalidades del dashboard (Vista general de Citas)
 
 - 🔄 **Backend**
-  - Implementación de más endpoints
+  - Implementación de más endpoints (Endpoint para listar todas las citas)
   - Mejoras en la seguridad
   - Optimización de consultas
 
@@ -264,6 +264,7 @@ python app.py
 - ✅ Dashboard principal
 - ✅ API RESTful completa
 - ✅ Base de datos optimizada
+- ✅ Gestión de Citas (CRUD y listado general)
 
 **Próximo milestone**: Implementación de análisis predictivo y sistema de reportes avanzados.
 
@@ -309,7 +310,7 @@ python app.py
   - [ ] Versionado de documentos
 
 - **Gestión de Consultas**
-  - [x] Calendario de citas
+  - [ ] Calendario de citas
   - [x] Notas de sesión
   - [x] Planes de tratamiento
   - [x] Seguimiento de progreso

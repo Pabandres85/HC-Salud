@@ -24,6 +24,10 @@ export const DASHBOARD_ROUTES: Routes = [
                 loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
             },
             {
+                path: 'citas',
+                loadComponent: () => import('./pages/citas/cita-general-list.component').then(m => m.CitaGeneralListComponent)
+            },
+            {
                 path: 'pacientes/:pacienteId/historia-clinica',
                 loadComponent: () => import('./pages/historia-clinica-integral/historia-clinica-integral-view.component').then(m => m.HistoriaClinicaIntegralViewComponent)
             },
