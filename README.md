@@ -210,6 +210,7 @@ python app.py
   - Controladores para pacientes y historias clínicas
   - Servicios de negocio implementados
   - Migraciones de base de datos
+  - Descarga de historia clínica integral como PDF
 
 - ✅ **Base de Datos (PostgreSQL)**
   - Contenedor configurado y funcionando
@@ -249,7 +250,7 @@ python app.py
 
 ## 🎯 Estado Actual del Desarrollo
 
-**Última actualización**: Mayo  2025
+**Última actualización**: Mayo 2025
 
 **Servicios funcionando**:
 - ✅ Frontend (Angular 19) - http://localhost:4200
@@ -260,11 +261,12 @@ python app.py
 **Funcionalidades implementadas**:
 - ✅ Sistema de autenticación completo
 - ✅ Gestión de pacientes
-- ✅ Historias clínicas digitales
-- ✅ Dashboard principal
+- ✅ Historias clínicas digitales (Creación, edición, vista integral)
+- ✅ Dashboard principal (Actividad reciente y contadores)
 - ✅ API RESTful completa
 - ✅ Base de datos optimizada
 - ✅ Gestión de Citas (CRUD y listado general)
+- ✅ Descarga de historia clínica integral como PDF por paciente
 
 **Próximo milestone**: Implementación de análisis predictivo y sistema de reportes avanzados.
 
@@ -326,7 +328,7 @@ python app.py
 - **Reportes Automáticos**
   - [ ] Generación de informes
   - [ ] Estadísticas avanzadas
-  - [ ] Exportación a PDF
+  - [x] Exportación a PDF
   - [ ] Dashboards personalizados
 
 ### **🔴 Fase 5: Funcionalidades Avanzadas (4-6 semanas)**
