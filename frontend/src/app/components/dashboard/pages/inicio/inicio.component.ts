@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PacienteService } from '../../../../services/paciente.service';
+import { DashboardService } from '../../../../services/dashboard.service';
 
 @Component({
     selector: 'app-inicio',
@@ -12,26 +14,36 @@ import { CommonModule } from '@angular/common';
                 <!-- Tarjeta de Pacientes -->
                 <div class="dashboard-card dashboard-card-indigo">
                     <h3>Pacientes</h3>
-                    <p class="dashboard-card-num">0</p>
+                    <p class="dashboard-card-num">{{ totalPacientes }}</p>
                     <p class="dashboard-card-desc">Total de pacientes registrados</p>
                 </div>
                 <!-- Tarjeta de Consultas -->
                 <div class="dashboard-card dashboard-card-green">
                     <h3>Consultas</h3>
-                    <p class="dashboard-card-num">0</p>
+                    <p class="dashboard-card-num">{{ consultasEsteMes }}</p>
                     <p class="dashboard-card-desc">Consultas realizadas este mes</p>
                 </div>
                 <!-- Tarjeta de Próximas Citas -->
                 <div class="dashboard-card dashboard-card-yellow">
                     <h3>Próximas Citas</h3>
-                    <p class="dashboard-card-num">0</p>
+                    <p class="dashboard-card-num">{{ citasHoy }}</p>
                     <p class="dashboard-card-desc">Citas programadas para hoy</p>
                 </div>
             </div>
             <div class="dashboard-actividad">
                 <h3>Actividad Reciente</h3>
                 <div class="dashboard-actividad-list">
-                    <p class="dashboard-actividad-empty">No hay actividad reciente</p>
+                    <!-- Iterar sobre la lista de actividad reciente -->
+                    <ng-container *ngIf="recentActivity.length > 0; else noActivity">
+                        <div *ngFor="let activity of recentActivity" class="activity-item">
+                            <p><strong>{{ activity.type }}:</strong> {{ activity.description }}</p>
+                            <small>{{ activity.date | date:'short' }}</small>
+                        </div>
+                    </ng-container>
+                    <!-- Mostrar mensaje si no hay actividad -->
+                    <ng-template #noActivity>
+                        <p class="dashboard-actividad-empty">No hay actividad reciente</p>
+                    </ng-template>
                 </div>
             </div>
         </div>
@@ -129,6 +141,22 @@ import { CommonModule } from '@angular/common';
             padding: 1.2rem; /* Espaciado interno */
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra */
         }
+        .activity-item {
+            border-bottom: 1px solid #eee; /* Separador entre actividades */
+            padding: 0.8rem 1rem;
+            
+            &:last-child { /* Sin borde en el último elemento */
+                border-bottom: none;
+            }
+        }
+        .activity-item p {
+             margin-bottom: 0.2rem;
+             color: #34495e; /* Color de texto principal */
+        }
+        .activity-item small {
+            color: #95a5a6; /* Color de texto secundario para la fecha */
+            font-size: 0.8rem;
+        }
         .dashboard-actividad-empty {
             color: #95a5a6; /* Color de texto gris más claro */
             text-align: center;
@@ -137,4 +165,58 @@ import { CommonModule } from '@angular/common';
         }
     `]
 })
-export class InicioComponent {} 
+export class InicioComponent implements OnInit {
+    totalPacientes: number = 0; // Propiedad para almacenar el total de pacientes
+    consultasEsteMes: number = 0; // Propiedad para almacenar el total de consultas este mes
+    citasHoy: number = 0; // Propiedad para almacenar el total de citas para hoy
+    recentActivity: any[] = []; // Propiedad para almacenar la actividad reciente
+
+    constructor(private pacienteService: PacienteService, private dashboardService: DashboardService) { }
+
+    ngOnInit(): void {
+        // Obtener total de pacientes (usando el endpoint de contadores)
+        // this.pacienteService.getPacientes(1, 1)
+        //     .subscribe({
+        //         next: (response) => {
+        //             this.totalPacientes = response.total || 0;
+        //         },
+        //         error: (error) => {
+        //             console.error('Error al obtener pacientes:', error);
+        //             this.totalPacientes = 0;
+        //         }
+        //     });
+
+        // Obtener contadores del dashboard
+        this.dashboardService.getDashboardCounts()
+            .subscribe({
+                next: (counts) => {
+                    console.log('Contadores recibidos:', counts); // Añadido para depuración
+                    this.totalPacientes = counts.totalPacientes || 0; // Asumiendo que la respuesta tiene totalPacientes
+                    this.consultasEsteMes = counts.consultasEsteMes || 0; // Asumiendo que la respuesta tiene consultasEsteMes
+                    this.citasHoy = counts.citasHoy || 0; // Asumiendo que la respuesta tiene citasHoy
+                },
+                error: (error) => {
+                    console.error('Error al obtener contadores del dashboard:', error); // Mantener error original
+                    // Intenta loggear el cuerpo del error si está disponible (para errores HTTP)
+                    if (error.error) {
+                        console.error('Cuerpo del error:', error.error);
+                    }
+                    this.totalPacientes = 0; // Resetear contadores en caso de error
+                    this.consultasEsteMes = 0;
+                    this.citasHoy = 0;
+                }
+            });
+
+        // Obtener actividad reciente
+        this.dashboardService.getRecentActivity()
+            .subscribe({
+                next: (activity) => {
+                    this.recentActivity = activity;
+                },
+                error: (error) => {
+                    console.error('Error al obtener actividad reciente:', error);
+                    this.recentActivity = []; // En caso de error, mostrar lista vacía
+                }
+            });
+    }
+} 

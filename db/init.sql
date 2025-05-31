@@ -32,3 +32,20 @@ VALUES (
     'admin',
     CURRENT_TIMESTAMP
 ) ON CONFLICT (Correo) DO NOTHING;
+
+-- Tabla para historias clínicas
+CREATE TABLE IF NOT EXISTS historiasclinicas (
+    id SERIAL PRIMARY KEY,
+    pacienteid INTEGER NOT NULL REFERENCES pacientes(id),
+    fechaconsulta TIMESTAMP NOT NULL,
+    subjetivo TEXT NOT NULL,
+    objetivo TEXT NOT NULL,
+    analisis TEXT NOT NULL,
+    plan TEXT NOT NULL,
+    creadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    actualizadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear índice para optimizar consultas por paciente
+CREATE INDEX IF NOT EXISTS idx_historiasclinicas_pacienteid ON historiasclinicas(pacienteid);
+CREATE INDEX IF NOT EXISTS idx_historiasclinicas_fechaconsulta ON historiasclinicas(fechaconsulta);

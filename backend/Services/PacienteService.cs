@@ -176,4 +176,19 @@ public class PacienteService
             CreadoEn = paciente.CreadoEn
         };
     }
+
+    // Nuevo método para obtener los N pacientes más recientes
+    public async Task<IEnumerable<Paciente>> GetLatestPacientesAsync(int count)
+    {
+        return await _context.Pacientes
+                             .OrderByDescending(p => p.CreadoEn) // Ordenar por fecha de creación descendente
+                             .Take(count)                       // Tomar los N más recientes
+                             .ToListAsync();                     // Ejecutar la consulta y obtener la lista
+    }
+
+    // Nuevo método para obtener el total de pacientes
+    public async Task<int> GetTotalPacientesAsync()
+    {
+        return await _context.Pacientes.CountAsync();
+    }
 } 

@@ -16,26 +16,46 @@ import { HistoriaClinicaResponse } from '../../../../models/historia-clinica.mod
   template: `
     <div class="card">
       <h2>{{ esEdicion ? 'Editar Historia Clínica' : 'Nueva Historia Clínica' }}</h2>
+
+      <div *ngIf="errorMessage" class="error-alert">
+        {{ errorMessage }}
+      </div>
+
       <form [formGroup]="historiaClinicaForm" (ngSubmit)="guardarHistoriaClinica()">
         <div class="form-field">
           <label for="fechaConsulta">Fecha de Consulta</label>
-          <input type="date" id="fechaConsulta" formControlName="fechaConsulta">
+          <input type="date" id="fechaConsulta" formControlName="fechaConsulta" [class.error]="historiaClinicaForm.get('fechaConsulta')?.invalid && historiaClinicaForm.get('fechaConsulta')?.touched">
+          <div class="error-message" *ngIf="historiaClinicaForm.get('fechaConsulta')?.invalid && historiaClinicaForm.get('fechaConsulta')?.touched">
+            La fecha de consulta es requerida
+          </div>
         </div>
         <div class="form-field">
           <label for="subjetivo">Subjetivo</label>
-          <textarea id="subjetivo" formControlName="subjetivo"></textarea>
+          <textarea id="subjetivo" formControlName="subjetivo" [class.error]="historiaClinicaForm.get('subjetivo')?.invalid && historiaClinicaForm.get('subjetivo')?.touched"></textarea>
+          <div class="error-message" *ngIf="historiaClinicaForm.get('subjetivo')?.invalid && historiaClinicaForm.get('subjetivo')?.touched">
+            El campo subjetivo es requerido
+          </div>
         </div>
         <div class="form-field">
           <label for="objetivo">Objetivo</label>
-          <textarea id="objetivo" formControlName="objetivo"></textarea>
+          <textarea id="objetivo" formControlName="objetivo" [class.error]="historiaClinicaForm.get('objetivo')?.invalid && historiaClinicaForm.get('objetivo')?.touched"></textarea>
+          <div class="error-message" *ngIf="historiaClinicaForm.get('objetivo')?.invalid && historiaClinicaForm.get('objetivo')?.touched">
+            El campo objetivo es requerido
+          </div>
         </div>
         <div class="form-field">
           <label for="analisis">Análisis</label>
-          <textarea id="analisis" formControlName="analisis"></textarea>
+          <textarea id="analisis" formControlName="analisis" [class.error]="historiaClinicaForm.get('analisis')?.invalid && historiaClinicaForm.get('analisis')?.touched"></textarea>
+          <div class="error-message" *ngIf="historiaClinicaForm.get('analisis')?.invalid && historiaClinicaForm.get('analisis')?.touched">
+            El campo análisis es requerido
+          </div>
         </div>
         <div class="form-field">
           <label for="plan">Plan</label>
-          <textarea id="plan" formControlName="plan"></textarea>
+          <textarea id="plan" formControlName="plan" [class.error]="historiaClinicaForm.get('plan')?.invalid && historiaClinicaForm.get('plan')?.touched"></textarea>
+          <div class="error-message" *ngIf="historiaClinicaForm.get('plan')?.invalid && historiaClinicaForm.get('plan')?.touched">
+            El campo plan es requerido
+          </div>
         </div>
 
         <div class="form-actions">
@@ -95,15 +115,33 @@ import { HistoriaClinicaResponse } from '../../../../models/historia-clinica.mod
       .btn-secondary:hover {
         background-color: #cbd5e1;
       }
+      .error {
+        border-color: #ef4444 !important;
+      }
+      .error-message {
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+      }
+      .error-alert {
+        background-color: #fee2e2;
+        border: 1px solid #ef4444;
+        color: #b91c1c;
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+      }
     `
   ]
 })
 export class HistoriaClinicaFormComponent implements OnInit {
 
   historiaClinicaForm: FormGroup;
-  esEdicion = false; // Para determinar si es edición
-  historiaClinicaId: number | null = null; // Para el caso de edición
-  pacienteId: number | null = null; // Necesitamos el ID del paciente
+  esEdicion = false;
+  historiaClinicaId: number | null = null;
+  pacienteId: number | null = null;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -145,6 +183,7 @@ export class HistoriaClinicaFormComponent implements OnInit {
             },
             error: (error) => {
               console.error('Error al cargar historia clínica:', error);
+              this.errorMessage = error.message;
             }
           });
 
@@ -154,56 +193,65 @@ export class HistoriaClinicaFormComponent implements OnInit {
          console.log('Modo creación: Paciente ID', this.pacienteId);
       } else {
          console.error('Error: No se encontró ID de paciente ni de historia clínica en la ruta.');
+         this.errorMessage = 'No se pudo determinar el paciente o la historia clínica';
       }
     });
   }
 
   guardarHistoriaClinica() {
-    if (this.historiaClinicaForm.valid && this.pacienteId !== null) {
-      const formData: HistoriaClinicaRequest = { // Usar el modelo de request
-         pacienteId: this.pacienteId,
-         fechaConsulta: this.historiaClinicaForm.value.fechaConsulta,
-         subjetivo: this.historiaClinicaForm.value.subjetivo,
-         objetivo: this.historiaClinicaForm.value.objetivo,
-         analisis: this.historiaClinicaForm.value.analisis,
-         plan: this.historiaClinicaForm.value.plan
+    if (this.historiaClinicaForm.invalid) {
+      this.marcarCamposComoTocados();
+      return;
+    }
+
+    if (this.pacienteId !== null) {
+      this.errorMessage = null;
+      const formData: HistoriaClinicaRequest = {
+        pacienteId: this.pacienteId,
+        fechaConsulta: this.historiaClinicaForm.value.fechaConsulta,
+        subjetivo: this.historiaClinicaForm.value.subjetivo,
+        objetivo: this.historiaClinicaForm.value.objetivo,
+        analisis: this.historiaClinicaForm.value.analisis,
+        plan: this.historiaClinicaForm.value.plan
       };
 
       console.log('Datos del formulario a guardar:', formData);
 
       if (this.esEdicion && this.historiaClinicaId !== null) {
-        // Lógica para actualizar historia clínica
         this.historiaClinicaService.actualizarHistoriaClinica(this.historiaClinicaId, formData)
           .subscribe({
             next: (response) => {
               console.log('Historia clínica actualizada con éxito', response);
-              // Navegar de regreso a la lista de historias clínicas del paciente
               this.router.navigate(['/dashboard/pacientes', this.pacienteId, 'historias-clinicas']);
             },
             error: (error) => {
               console.error('Error al actualizar historia clínica:', error);
-              // TODO: Mostrar feedback de error en la UI
+              this.errorMessage = error.message;
             }
           });
       } else {
-        // Lógica para crear nueva historia clínica
         this.historiaClinicaService.crearHistoriaClinica(formData)
           .subscribe({
             next: (response) => {
               console.log('Historia clínica creada con éxito', response);
-              // Navegar de regreso a la lista de historias clínicas del paciente
               this.router.navigate(['/dashboard/pacientes', this.pacienteId, 'historias-clinicas']);
             },
             error: (error) => {
               console.error('Error al crear historia clínica:', error);
-              // TODO: Mostrar feedback de error en la UI
+              this.errorMessage = error.message;
             }
           });
       }
     } else {
-      console.error('Formulario inválido o pacienteId no disponible.');
-      // TODO: Mostrar mensaje al usuario
+      this.errorMessage = 'No se pudo determinar el paciente';
     }
+  }
+
+  private marcarCamposComoTocados() {
+    Object.keys(this.historiaClinicaForm.controls).forEach(key => {
+      const control = this.historiaClinicaForm.get(key);
+      control?.markAsTouched();
+    });
   }
 
   cancelar() {

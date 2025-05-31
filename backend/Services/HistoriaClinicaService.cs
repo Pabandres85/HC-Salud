@@ -158,4 +158,25 @@ public class HistoriaClinicaService
 
         return true;
     }
+
+    // Nuevo método para obtener el total de consultas (historias clínicas) en el mes actual
+    public async Task<int> GetConsultasThisMonthAsync()
+    {
+        var now = DateTime.UtcNow; // Usar UTC para consistencia
+        var firstDayOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        return await _context.HistoriasClinicas
+                             .CountAsync(h => h.FechaConsulta >= firstDayOfMonth && h.FechaConsulta <= lastDayOfMonth);
+    }
+
+    // Nuevo método para obtener las N historias clínicas más recientes e incluir el paciente asociado
+    public async Task<IEnumerable<HistoriaClinica>> GetLatestHistoriasClinicasAsync(int count)
+    {
+        return await _context.HistoriasClinicas
+                             .Include(h => h.Paciente)         // Incluir la información del Paciente asociado
+                             .OrderByDescending(h => h.CreadoEn) // Ordenar por fecha de creación descendente (o podrías usar ActualizadoEn)
+                             .Take(count)                      // Tomar las N más recientes
+                             .ToListAsync();                    // Ejecutar la consulta y obtener la lista
+    }
 } 

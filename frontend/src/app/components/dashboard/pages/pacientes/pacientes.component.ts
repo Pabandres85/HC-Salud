@@ -15,6 +15,11 @@ import { Router } from '@angular/router';
                 <h2>Pacientes</h2>
                 <button (click)="abrirModalNuevoPaciente()" class="btn pacientes-btn-nuevo">Nuevo Paciente</button>
             </div>
+
+            <div *ngIf="errorMessage" class="error-alert">
+                {{ errorMessage }}
+            </div>
+
             <!-- Tabla de Pacientes -->
             <div class="pacientes-table-wrap">
                 <table class="table pacientes-table">
@@ -66,49 +71,79 @@ import { Router } from '@angular/router';
             <div class="pacientes-modal">
                 <form [formGroup]="pacienteForm" (ngSubmit)="guardarPaciente()">
                     <h3>{{ pacienteSeleccionado ? 'Editar Paciente' : 'Nuevo Paciente' }}</h3>
+
+                    <div *ngIf="errorMessage" class="error-alert">
+                        {{ errorMessage }}
+                    </div>
+
                     <div class="pacientes-modal-fields">
                         <div class="pacientes-modal-field">
                             <label for="nombreCompleto">Nombre Completo</label>
-                            <input type="text" id="nombreCompleto" formControlName="nombreCompleto">
+                            <input type="text" id="nombreCompleto" formControlName="nombreCompleto" [class.error]="pacienteForm.get('nombreCompleto')?.invalid && pacienteForm.get('nombreCompleto')?.touched">
+                            <div class="error-message" *ngIf="pacienteForm.get('nombreCompleto')?.invalid && pacienteForm.get('nombreCompleto')?.touched">
+                                El nombre completo es requerido
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="fechaNacimiento">Fecha de Nacimiento</label>
-                            <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento">
+                            <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento" [class.error]="pacienteForm.get('fechaNacimiento')?.invalid && pacienteForm.get('fechaNacimiento')?.touched">
+                            <div class="error-message" *ngIf="pacienteForm.get('fechaNacimiento')?.invalid && pacienteForm.get('fechaNacimiento')?.touched">
+                                La fecha de nacimiento es requerida
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="genero">Género</label>
-                            <select id="genero" formControlName="genero">
+                            <select id="genero" formControlName="genero" [class.error]="pacienteForm.get('genero')?.invalid && pacienteForm.get('genero')?.touched">
                                 <option value="">Seleccione...</option>
                                 <option value="masculino">Masculino</option>
                                 <option value="femenino">Femenino</option>
                                 <option value="otro">Otro</option>
                             </select>
+                            <div class="error-message" *ngIf="pacienteForm.get('genero')?.invalid && pacienteForm.get('genero')?.touched">
+                                El género es requerido
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="direccion">Dirección</label>
-                            <input type="text" id="direccion" formControlName="direccion">
+                            <input type="text" id="direccion" formControlName="direccion" [class.error]="pacienteForm.get('direccion')?.invalid && pacienteForm.get('direccion')?.touched">
+                            <div class="error-message" *ngIf="pacienteForm.get('direccion')?.invalid && pacienteForm.get('direccion')?.touched">
+                                La dirección es requerida
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="telefono">Teléfono</label>
-                            <input type="tel" id="telefono" formControlName="telefono">
+                            <input type="tel" id="telefono" formControlName="telefono" [class.error]="pacienteForm.get('telefono')?.invalid && pacienteForm.get('telefono')?.touched">
+                            <div class="error-message" *ngIf="pacienteForm.get('telefono')?.invalid && pacienteForm.get('telefono')?.touched">
+                                El teléfono es requerido
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="correo">Correo Electrónico</label>
-                            <input type="email" id="correo" formControlName="correo">
+                            <input type="email" id="correo" formControlName="correo" [class.error]="pacienteForm.get('correo')?.invalid && pacienteForm.get('correo')?.touched">
+                            <div class="error-message" *ngIf="pacienteForm.get('correo')?.invalid && pacienteForm.get('correo')?.touched">
+                                <span *ngIf="pacienteForm.get('correo')?.errors?.['required']">El correo es requerido</span>
+                                <span *ngIf="pacienteForm.get('correo')?.errors?.['email']">El correo no es válido</span>
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="ocupacion">Ocupación</label>
-                            <input type="text" id="ocupacion" formControlName="ocupacion">
+                            <input type="text" id="ocupacion" formControlName="ocupacion" [class.error]="pacienteForm.get('ocupacion')?.invalid && pacienteForm.get('ocupacion')?.touched">
+                            <div class="error-message" *ngIf="pacienteForm.get('ocupacion')?.invalid && pacienteForm.get('ocupacion')?.touched">
+                                La ocupación es requerida
+                            </div>
                         </div>
                         <div class="pacientes-modal-field">
                             <label for="estadoCivil">Estado Civil</label>
-                            <select id="estadoCivil" formControlName="estadoCivil">
+                            <select id="estadoCivil" formControlName="estadoCivil" [class.error]="pacienteForm.get('estadoCivil')?.invalid && pacienteForm.get('estadoCivil')?.touched">
                                 <option value="">Seleccione...</option>
                                 <option value="soltero">Soltero(a)</option>
                                 <option value="casado">Casado(a)</option>
                                 <option value="divorciado">Divorciado(a)</option>
                                 <option value="viudo">Viudo(a)</option>
                             </select>
+                            <div class="error-message" *ngIf="pacienteForm.get('estadoCivil')?.invalid && pacienteForm.get('estadoCivil')?.touched">
+                                El estado civil es requerido
+                            </div>
                         </div>
                     </div>
                     <div class="pacientes-modal-actions">
@@ -255,6 +290,23 @@ import { Router } from '@angular/router';
                 max-width: 98vw;
             }
         }
+        .error {
+            border-color: #ef4444 !important;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .error-alert {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #b91c1c;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
     `]
 })
 export class PacientesComponent implements OnInit {
@@ -267,6 +319,7 @@ export class PacientesComponent implements OnInit {
     totalItems = 0;
     totalPaginas = 1;
     Math = Math;
+    errorMessage: string | null = null;
 
     constructor(
         private fb: FormBuilder,
@@ -285,11 +338,12 @@ export class PacientesComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.cargarPacientes();
     }
 
     cargarPacientes() {
+        this.errorMessage = null;
         this.pacienteService.getPacientes(this.paginaActual, this.itemsPorPagina)
             .subscribe({
                 next: (response) => {
@@ -299,6 +353,7 @@ export class PacientesComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error al cargar pacientes:', error);
+                    this.errorMessage = error.message;
                 }
             });
     }
@@ -339,43 +394,45 @@ export class PacientesComponent implements OnInit {
 
     guardarPaciente() {
         if (this.pacienteForm.invalid) {
-            console.error('Formulario inválido');
+            this.marcarCamposComoTocados();
             return;
         }
 
+        this.errorMessage = null;
         const pacienteData: PacienteRequest = this.pacienteForm.value;
 
         if (this.pacienteSeleccionado) {
             this.pacienteService.actualizarPaciente(this.pacienteSeleccionado.id, pacienteData)
-                .subscribe(
-                    (response) => {
+                .subscribe({
+                    next: (response) => {
                         console.log('Paciente actualizado con éxito', response);
                         this.cargarPacientes();
                         this.cerrarModal();
                     },
-                    (error) => {
-                        console.error('Error al actualizar paciente', error);
-                        // TODO: Mostrar feedback de error en la UI
+                    error: (error) => {
+                        console.error('Error al actualizar paciente:', error);
+                        this.errorMessage = error.message;
                     }
-                );
+                });
         } else {
             this.pacienteService.crearPaciente(pacienteData)
-                .subscribe(
-                    (response) => {
+                .subscribe({
+                    next: (response) => {
                         console.log('Paciente creado con éxito', response);
                         this.cargarPacientes();
                         this.cerrarModal();
                     },
-                    (error) => {
-                        console.error('Error al crear paciente', error);
-                        // TODO: Mostrar feedback de error en la UI
+                    error: (error) => {
+                        console.error('Error al crear paciente:', error);
+                        this.errorMessage = error.message;
                     }
-                );
+                });
         }
     }
 
     eliminarPaciente(id: number) {
         if (confirm('¿Está seguro de eliminar este paciente?')) {
+            this.errorMessage = null;
             this.pacienteService.eliminarPaciente(id)
                 .subscribe({
                     next: () => {
@@ -383,9 +440,17 @@ export class PacientesComponent implements OnInit {
                     },
                     error: (error) => {
                         console.error('Error al eliminar paciente:', error);
+                        this.errorMessage = error.message;
                     }
                 });
         }
+    }
+
+    private marcarCamposComoTocados() {
+        Object.keys(this.pacienteForm.controls).forEach(key => {
+            const control = this.pacienteForm.get(key);
+            control?.markAsTouched();
+        });
     }
 
     calcularEdad(fechaNacimiento: Date): number {
