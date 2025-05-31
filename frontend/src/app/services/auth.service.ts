@@ -41,8 +41,35 @@ export class AuthService {
 
     getToken(): string | null {
         const user = this.currentUserSubject.value;
-        return user ? user.token : null;
+        console.log('🔍 AuthService.getToken() llamado');
+        console.log('🔍 currentUserSubject.value:', user);
+        console.log('🔍 localStorage currentUser:', localStorage.getItem('currentUser'));
+        if (user && user.token) {
+            console.log('✅ Token encontrado:', user.token.substring(0, 20) + '...');
+            return user.token;
+        } else {
+            console.log('❌ No se encontró token en currentUserSubject');
+            
+            // 🔧 FALLBACK: Intentar obtener directamente de localStorage
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    console.log('🔧 Fallback - Usuario del localStorage:', parsedUser);
+                    if (parsedUser.token) {
+                        console.log('🔧 Fallback - Token encontrado en localStorage');
+                        return parsedUser.token;
+                    }
+                } catch (error) {
+                    console.error('❌ Error al parsear usuario del localStorage:', error);
+                }
+            }
+            
+            return null;
+        }
     }
+
+    
 
     isAuthenticated(): boolean {
         return !!this.currentUserSubject.value;

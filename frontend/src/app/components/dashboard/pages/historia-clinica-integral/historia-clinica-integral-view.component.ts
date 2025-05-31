@@ -6,13 +6,14 @@ import { HistoriaClinicaResponse } from '../../../../models/historia-clinica.mod
 import { AnamnesisService } from '../../../../services/anamnesis.service';
 import { HistoriaClinicaService } from '../../../../services/historia-clinica.service';
 import { catchError, forkJoin, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-historia-clinica-integral-view',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule // Importar RouterModule para usar routerLink
+    RouterModule, // Importar RouterModule para usar routerLink
   ],
   template: `
     <div class="card">
@@ -20,6 +21,11 @@ import { catchError, forkJoin, of, throwError } from 'rxjs';
 
       <div *ngIf="errorMessage" class="error-alert">
         {{ errorMessage }}
+      </div>
+
+      <!-- Botón de Descarga de PDF -->
+      <div class="action-buttons mb-4">
+        <button (click)="downloadPdf()" class="btn btn-secondary" [disabled]="!pacienteId">Descargar Historia Clínica PDF</button>
       </div>
 
       <!-- Sección de Anamnesis -->
@@ -194,7 +200,8 @@ export class HistoriaClinicaIntegralViewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private anamnesisService: AnamnesisService,
-    private historiaClinicaService: HistoriaClinicaService
+    private historiaClinicaService: HistoriaClinicaService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -277,5 +284,51 @@ export class HistoriaClinicaIntegralViewComponent implements OnInit {
     verDetalleHistoria(historiaId: number) {
        this.router.navigate(['historias-clinicas', historiaId], { relativeTo: this.route });
     }
+
+    downloadPdf() {
+        if (this.pacienteId === null) {
+          console.error('No hay ID de paciente para descargar el PDF.');
+          return;
+        }
+      
+        // Construir la URL del endpoint del backend
+        const pdfUrl = `/api/HistoriaClinica/paciente/${this.pacienteId}/pdf`;
+      
+        // Realizar la solicitud GET al backend y esperar un blob (el archivo PDF)
+        this.http.get(pdfUrl, { responseType: 'blob' }).subscribe({
+          next: (responseBlob) => {
+            // Crear un objeto URL a partir del blob
+            const blob = new Blob([responseBlob], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+      
+            // Generar nombre de archivo más descriptivo
+            const fechaActual = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+            const nombrePaciente = this.pacienteNombre || 'Paciente';
+            const nombreArchivo = `HistoriaClinica_${nombrePaciente.replace(/\s+/g, '_')}_${fechaActual}.pdf`;
+      
+            // Crear un enlace temporal y hacer clic en él para iniciar la descarga
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombreArchivo;
+            document.body.appendChild(a);
+            a.click();
+      
+            // Limpiar el objeto URL y el enlace temporal
+            window.URL.revokeObjectURL(url);
+            a.remove();
+      
+            console.log(`✅ PDF descargado exitosamente: ${nombreArchivo}`);
+          },
+          error: (error) => {
+            console.error('Error al descargar el PDF:', error);
+            this.errorMessage = 'Error al descargar la historia clínica. Por favor, inténtelo de nuevo.';
+            
+            // Limpiar el mensaje de error después de 5 segundos
+            setTimeout(() => {
+              this.errorMessage = null;
+            }, 5000);
+          }
+        });
+      }
 
 } 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 // QuestPDF using directives
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
-using QuestPDF.Drawing;
+using QuestPDF.Infrastructure;
 
 namespace Backend.Controllers;
 
@@ -53,19 +53,38 @@ public class HistoriaClinicaController : ControllerBase
     {
         try
         {
-            // Obtener historias clínicas del paciente
-            var historiasResponse = await _historiaClinicaService.GetHistoriasClinicasByPaciente(pacienteId, 1, 100);
+            Console.WriteLine($"🔍 INICIO: Generando PDF para paciente {pacienteId}");
             
-            // Verificar que tenemos datos - CORREGIDO
+            // Obtener historias clínicas
+            var historiasResponse = await _historiaClinicaService.GetHistoriasClinicasByPaciente(pacienteId, 1, 100);
+            Console.WriteLine($"🔍 DATOS: Historias obtenidas - {historiasResponse?.Data?.Count() ?? 0}");
+            
             if (historiasResponse?.Data == null || !historiasResponse.Data.Any())
             {
+                Console.WriteLine("❌ No se encontraron historias clínicas");
                 return NotFound(new { message = "No se encontraron historias clínicas para este paciente." });
             }
 
-            // Convertir a lista para poder trabajar con ella - CORREGIDO
             var historias = historiasResponse.Data.ToList();
+            Console.WriteLine($"🔍 LISTA: {historias.Count} historias procesadas");
 
-            // Crear documento PDF
+            // Obtener anamnesis
+            AnamnesisResponse? anamnesis = null;
+            try
+            {
+                anamnesis = await _anamnesisService.GetAnamnesisByPacienteIdAsync(pacienteId);
+                Console.WriteLine($"🔍 ANAMNESIS: Obtenida exitosamente");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ No se pudo obtener anamnesis: {ex.Message}");
+                // Continuar sin anamnesis
+            }
+
+            var pacienteNombre = $"Paciente {pacienteId}"; // Simplificado por ahora
+
+            Console.WriteLine("🔍 PDF: Iniciando creación de documento QuestPDF...");
+            
             var document = Document.Create(container =>
             {
                 container.Page(page =>
@@ -73,49 +92,167 @@ public class HistoriaClinicaController : ControllerBase
                     page.Size(PageSizes.A4);
                     page.Margin(40);
 
-                    page.Header()
-                        .Text($"Historia Clínica - Paciente {pacienteId}")
-                        .FontSize(16)
-                        .Bold()
-                        .AlignCenter();
-
-                    page.Content()
-                        .PaddingVertical(10)
-                        .Column(column =>
-                        {
-                            column.Item().Text("Notas de Progreso").FontSize(14).Bold();
-                            column.Item().Text("").LineHeight(0.5f);
+                    // HEADER
+                    page.Header().Column(column =>
+                    {
+                        column.Item().Text("HISTORIA CLÍNICA INTEGRAL")
+                            .FontSize(18)
+                            .Bold()
+                            .AlignCenter();
+                        
+                        column.Item().Text($"Paciente: {pacienteNombre}")
+                            .FontSize(14)
+                            .Bold()
+                            .AlignCenter();
                             
-                            // Usar foreach en lugar de for loop - CORREGIDO
-                            var contador = 1;
-                            foreach (var historia in historias)
-                            {
-                                column.Item().Text($"{contador}. Fecha: {historia.FechaConsulta:dd/MM/yyyy HH:mm}").Bold();
-                                column.Item().Text($"Subjetivo: {historia.Subjetivo}");
-                                column.Item().Text($"Objetivo: {historia.Objetivo}");
-                                column.Item().Text($"Análisis: {historia.Analisis}");
-                                column.Item().Text($"Plan: {historia.Plan}");
-                                column.Item().Text("").LineHeight(0.5f);
-                                contador++;
-                            }
-                        });
+                        column.Item().Text($"Fecha de generación: {DateTime.Now:dd/MM/yyyy HH:mm}")
+                            .FontSize(10)
+                            .AlignCenter();
+                            
+                        column.Item().LineHorizontal(1);
+                    });
 
-                    page.Footer()
-                        .Text("Generado automáticamente")
-                        .FontSize(10)
-                        .AlignCenter();
+                    page.Content().Column(column =>
+                    {
+                        // Espaciado inicial
+                        column.Item().Container().Height(20);
+
+                        // INFORMACIÓN DE ANAMNESIS (si existe)
+                        if (anamnesis != null)
+                        {
+                            column.Item().Text("ANAMNESIS INICIAL")
+                                .FontSize(16)
+                                .Bold();
+
+                            column.Item().Container().Height(10);
+
+                            column.Item().Row(row =>
+                            {
+                                row.RelativeItem().Column(col =>
+                                {
+                                    col.Item().Text($"Grado de Instrucción: {anamnesis.GradoInstruccion ?? "N/A"}").FontSize(10);
+                                    col.Item().Text($"Religión: {anamnesis.Religion ?? "N/A"}").FontSize(10);
+                                    col.Item().Text($"Estructura Familiar: {anamnesis.EstructuraFamiliar ?? "N/A"}").FontSize(10);
+                                    col.Item().Text($"Informante: {anamnesis.Informante ?? "N/A"}").FontSize(10);
+                                });
+                                
+                                row.RelativeItem().Column(col =>
+                                {
+                                    col.Item().Text($"Examinador: {anamnesis.Examinador ?? "N/A"}").FontSize(10);
+                                    col.Item().Text($"Fecha Entrevista: {anamnesis.FechaEntrevistaInicial:dd/MM/yyyy}").FontSize(10);
+                                    col.Item().Text($"Motivo de Consulta: {anamnesis.MotivoConsulta ?? "N/A"}").FontSize(10);
+                                });
+                            });
+
+                            column.Item().Text($"Problema Actual: {anamnesis.ProblemaActual ?? "N/A"}")
+                                .FontSize(10);
+                                
+                            column.Item().Text($"Observación de Conducta: {anamnesis.ObservacionConducta ?? "N/A"}")
+                                .FontSize(10);
+
+                            column.Item().Container().Height(10);
+                            column.Item().LineHorizontal(0.5f);
+                            column.Item().Container().Height(15);
+                        }
+
+                        // NOTAS DE PROGRESO
+                        column.Item().Text("NOTAS DE PROGRESO (SESIONES)")
+                            .FontSize(16)
+                            .Bold();
+
+                        column.Item().Container().Height(10);
+
+                        var contador = 1;
+                        foreach (var historia in historias)
+                        {
+                            // Encabezado de sesión
+                            column.Item().Row(row =>
+                            {
+                                row.RelativeItem().Text($"SESIÓN {contador}")
+                                    .FontSize(12)
+                                    .Bold();
+                                row.RelativeItem().Text($"Fecha: {historia.FechaConsulta:dd/MM/yyyy HH:mm}")
+                                    .FontSize(12)
+                                    .Bold()
+                                    .AlignRight();
+                            });
+
+                            column.Item().Container().Height(5);
+
+                            // Contenido SOAP
+                            column.Item().Column(soapColumn =>
+                            {
+                                soapColumn.Item().Text("SUBJETIVO:")
+                                    .FontSize(11)
+                                    .Bold();
+                                soapColumn.Item().Text(historia.Subjetivo ?? "N/A")
+                                    .FontSize(10);
+
+                                soapColumn.Item().Container().Height(3);
+
+                                soapColumn.Item().Text("OBJETIVO:")
+                                    .FontSize(11)
+                                    .Bold();
+                                soapColumn.Item().Text(historia.Objetivo ?? "N/A")
+                                    .FontSize(10);
+
+                                soapColumn.Item().Container().Height(3);
+
+                                soapColumn.Item().Text("ANÁLISIS:")
+                                    .FontSize(11)
+                                    .Bold();
+                                soapColumn.Item().Text(historia.Analisis ?? "N/A")
+                                    .FontSize(10);
+
+                                soapColumn.Item().Container().Height(3);
+
+                                soapColumn.Item().Text("PLAN:")
+                                    .FontSize(11)
+                                    .Bold();
+                                soapColumn.Item().Text(historia.Plan ?? "N/A")
+                                    .FontSize(10);
+                            });
+
+                            // Separador entre sesiones
+                            if (contador < historias.Count)
+                            {
+                                column.Item().Container().Height(10);
+                                column.Item().LineHorizontal(0.5f);
+                                column.Item().Container().Height(10);
+                            }
+
+                            contador++;
+                        }
+                    });
+
+                    // FOOTER
+                    page.Footer().Row(row =>
+                    {
+                        row.RelativeItem().Text("Generado automáticamente por Sistema de Psicología")
+                            .FontSize(8);
+                        row.RelativeItem().Text("Página {{pdf.PageNumber}} de {{pdf.TotalPages}}")
+                            .FontSize(8)
+                            .AlignRight();
+                    });
                 });
             });
 
-            // Generar PDF
+            Console.WriteLine("🔍 PDF: Generando bytes...");
             var pdfBytes = document.GeneratePdf();
+            Console.WriteLine($"✅ PDF: Generado exitosamente - {pdfBytes.Length} bytes");
             
-            // Retornar archivo
-            return File(pdfBytes, "application/pdf", $"HistoriaClinica_Paciente_{pacienteId}.pdf");
+            return File(pdfBytes, "application/pdf", $"HistoriaClinica_Paciente_{pacienteId}_{DateTime.Now:yyyyMMdd}.pdf");
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = "Error al generar PDF", error = ex.Message });
+            Console.WriteLine($"💥 ERROR COMPLETO: {ex.Message}");
+            Console.WriteLine($"💥 TIPO: {ex.GetType().Name}");
+            Console.WriteLine($"💥 STACK: {ex.StackTrace}");
+            return StatusCode(500, new { 
+                message = "Error al generar PDF", 
+                error = ex.Message,
+                type = ex.GetType().Name
+            });
         }
     }
 

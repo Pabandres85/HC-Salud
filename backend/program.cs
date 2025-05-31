@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using QuestPDF.Infrastructure;
 
 //using Npgsql.EntityFrameworkCore.PostgreSQL.Naming; // Eliminado: No necesario con EntityFrameworkCore.NamingConventions
 //using EntityFrameworkCore.NamingConventions; // Eliminado: Removimos la dependencia
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +70,9 @@ builder.Services.AddCors(options =>
 
 // Escuchar en todas las IPs dentro del contenedor (requisito para Docker)
 builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
+QuestPDF.Settings.License = LicenseType.Community;
+QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = false;
 
 var app = builder.Build();
 
