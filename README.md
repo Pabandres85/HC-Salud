@@ -504,5 +504,3 @@ Para soporte técnico o preguntas:
 Este proyecto está licenciado bajo la **MIT License** - ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ---
-
-*Desarrollado con ❤️ para profesionales de la salud mental*

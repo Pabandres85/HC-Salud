@@ -4,12 +4,11 @@ set -e
 
 # Esperar a que la base de datos esté disponible
 echo "Esperando a que la base de datos esté disponible..."
-/opt/mssql-tools/bin/sqlcmd -S db -U sa -P $SA_PASSWORD -Q "SELECT 1" || \
-while [ $? -ne 0 ]
-do
+
+# Usar herramientas de PostgreSQL en lugar de SQL Server
+until nc -z db 5432; do
     echo "Base de datos no disponible, reintentando en 5 segundos..."
     sleep 5
-    /opt/mssql-tools/bin/sqlcmd -S db -U sa -P $SA_PASSWORD -Q "SELECT 1" || true
 done
 echo "Base de datos disponible."
 
@@ -24,4 +23,4 @@ echo "Migraciones aplicadas."
 
 # Iniciar la aplicación principal
 echo "Iniciando la aplicación principal..."
-exec dotnet Backend.dll 
+exec dotnet Backend.dll
