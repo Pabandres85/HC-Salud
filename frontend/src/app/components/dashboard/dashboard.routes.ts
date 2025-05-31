@@ -24,6 +24,18 @@ export const DASHBOARD_ROUTES: Routes = [
                 loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
             },
             {
+                path: 'pacientes/:pacienteId/historia-clinica',
+                loadComponent: () => import('./pages/historia-clinica-integral/historia-clinica-integral-view.component').then(m => m.HistoriaClinicaIntegralViewComponent)
+            },
+            {
+                path: 'pacientes/:pacienteId/historia-clinica/crear-anamnesis',
+                loadComponent: () => import('./pages/historia-clinica-integral/anamnesis-form.component').then(m => m.AnamnesisFormComponent)
+            },
+            {
+                path: 'pacientes/:pacienteId/historia-clinica/anamnesis/:anamnesisId/editar',
+                loadComponent: () => import('./pages/historia-clinica-integral/anamnesis-form.component').then(m => m.AnamnesisFormComponent)
+            },
+            {
                 path: 'pacientes/:id/historias-clinicas',
                 loadComponent: () => import('./pages/historias-clinicas/historia-clinica-list.component').then(m => m.HistoriaClinicaListComponent)
             },

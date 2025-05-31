@@ -13,8 +13,8 @@ import { HistoriaClinicaResponse, HistoriasClinicasResponse } from '../../../../
   template: `
     <div class="card">
       <div class="flex justify-between items-center mb-4">
-        <h2>Historial Clínico del Paciente</h2>
-        <button *ngIf="pacienteId !== null" (click)="crearHistoriaClinica()" class="btn btn-primary">Nueva Historia Clínica</button>
+        <h2>Historial Clínico del Paciente (Notas de Progreso)</h2>
+        <button *ngIf="pacienteId !== null" (click)="crearHistoriaClinica()" class="btn btn-primary">Nueva Notas de Progreso</button>
       </div>
 
       <div *ngIf="historiasClinicas.length === 0">

@@ -94,6 +94,14 @@ public class HistoriaClinicaService
         };
 
         _context.HistoriasClinicas.Add(historia);
+
+        // Actualizar la fecha de última consulta en el paciente
+        var paciente = await _context.Pacientes.FindAsync(request.PacienteId);
+        if (paciente != null)
+        {
+            paciente.UltimaConsulta = historia.FechaConsulta;
+        }
+
         await _context.SaveChangesAsync();
 
          return new HistoriaClinicaResponse // Placeholder
@@ -126,6 +134,21 @@ public class HistoriaClinicaService
         historia.Analisis = request.Analisis;
         historia.Plan = request.Plan;
         historia.ActualizadoEn = DateTime.UtcNow;
+
+        // Actualizar la fecha de última consulta en el paciente asociado si la fecha de esta historia clínica es más reciente
+        var paciente = await _context.Pacientes.FindAsync(historia.PacienteId);
+        if (paciente != null)
+        {
+            // Solo actualizamos si la fecha de esta historia clínica es posterior a la última registrada
+            if (paciente.UltimaConsulta == null || historia.FechaConsulta > paciente.UltimaConsulta)
+            {
+                paciente.UltimaConsulta = historia.FechaConsulta;
+            }
+             // Si la fecha de esta historia clínica no es la más reciente, podrías querer recalcular la última consulta
+             // buscando la máxima fecha entre todas las historias clínicas del paciente.
+             // Esto añade complejidad y podría no ser necesario si siempre actualizamos con la fecha correcta.
+             // Por ahora, mantendremos la lógica simple de solo actualizar si es más reciente.
+        }
 
         await _context.SaveChangesAsync();
 
@@ -164,10 +187,22 @@ public class HistoriaClinicaService
     {
         var now = DateTime.UtcNow; // Usar UTC para consistencia
         var firstDayOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
-        return await _context.HistoriasClinicas
-                             .CountAsync(h => h.FechaConsulta >= firstDayOfMonth && h.FechaConsulta <= lastDayOfMonth);
+        // Calcular el primer día del siguiente mes para definir el final del rango
+        var firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
+
+        // Contar historias clínicas dentro del rango de fechas
+        var historiasClinicasCount = await _context.HistoriasClinicas
+                                                 .CountAsync(h => h.FechaConsulta >= firstDayOfMonth && h.FechaConsulta < firstDayOfNextMonth);
+
+        // Contar anamnesis creadas dentro del rango de fechas
+        // Asumiendo que la fecha relevante para la anamnesis es CreadoEn o FechaEntrevistaInicial
+        // Usaremos CreadoEn para este ejemplo, puedes ajustarlo si es necesario
+        var anamnesisCount = await _context.Anamnesis
+                                           .CountAsync(a => a.CreadoEn >= firstDayOfMonth && a.CreadoEn < firstDayOfNextMonth);
+
+        // Sumar ambos contadores
+        return historiasClinicasCount + anamnesisCount;
     }
 
     // Nuevo método para obtener las N historias clínicas más recientes e incluir el paciente asociado

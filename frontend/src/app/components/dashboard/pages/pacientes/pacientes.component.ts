@@ -23,13 +23,13 @@ import { Router } from '@angular/router';
             <!-- Tabla de Pacientes -->
             <div class="pacientes-table-wrap">
                 <table class="table pacientes-table">
-                    <thead>
+                      <thead>
                         <tr>
                             <th>Nombre</th>
                             <th>Edad</th>
                             <th>Última Consulta</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                             <th>Notas de Progreso</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,9 +46,8 @@ import { Router } from '@angular/router';
                                 </span>
                             </td>
                             <td>
-                                <button (click)="editarPaciente(paciente)" class="pacientes-btn-link">Editar</button>
-                                <button (click)="eliminarPaciente(paciente.id)" class="pacientes-btn-link pacientes-btn-link-danger">Eliminar</button>
-                                <button (click)="verHistoriasClinicas(paciente.id)" class="pacientes-btn-link">Historias Clínicas</button>
+                                <button (click)="verHistoriasClinicas(paciente.id)" class="pacientes-btn-link">Notas de Progreso</button>
+                                <button (click)="verHistoriaClinicaIntegral(paciente.id)" class="pacientes-btn-link">Historia Clínica Integral</button>
                             </td>
                         </tr>
                         <tr *ngIf="pacientes.length === 0">
@@ -472,5 +471,9 @@ export class PacientesComponent implements OnInit {
 
     verHistoriasClinicas(pacienteId: number) {
         this.router.navigate(['/dashboard/pacientes', pacienteId, 'historias-clinicas']);
+    }
+
+    verHistoriaClinicaIntegral(pacienteId: number) {
+        this.router.navigate(['/dashboard/pacientes', pacienteId, 'historia-clinica']);
     }
 } 

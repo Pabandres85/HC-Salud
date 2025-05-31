@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Backend.Models; // Ajusta el namespace si es diferente
 using Backend.Services; // Ajusta el namespace si es diferente
 using System.Linq;
+using System;
 
 namespace Backend.Controllers // Asegúrate de usar el namespace correcto de tus controladores
 {
@@ -80,6 +81,9 @@ namespace Backend.Controllers // Asegúrate de usar el namespace correcto de tus
                 // Usar los métodos eficientes para obtener los contadores
                 var totalPacientes = await _pacienteService.GetTotalPacientesAsync();
                 var consultasEsteMes = await _historiaClinicaService.GetConsultasThisMonthAsync();
+                
+                // Log temporal para depuración
+                Console.WriteLine($"[DashboardController] ConsultasEsteMes obtenido: {consultasEsteMes}");
                 
                 // TODO: Implementar la lógica para obtener las citas programadas para hoy.
                 // Esto requiere una entidad/tabla de Citas y un método en un servicio correspondiente.

@@ -29,6 +29,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PacienteService>();
 builder.Services.AddTransient<HistoriaClinicaService>();
+builder.Services.AddScoped<AnamnesisService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

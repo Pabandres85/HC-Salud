@@ -10,6 +10,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Paciente> Pacientes { get; set; }
     public DbSet<HistoriaClinica> HistoriasClinicas { get; set; }
+    public DbSet<Anamnesis> Anamnesis { get; set; }
+    public DbSet<Cita> Citas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -115,5 +117,87 @@ public class ApplicationDbContext : DbContext
             .HasOne(h => h.Paciente)
             .WithMany()
             .HasForeignKey(h => h.PacienteId);
+
+        // Configurar Entity Framework para mapear la entidad Anamnesis a la tabla 'anamnesis' y sus columnas
+        modelBuilder.Entity<Anamnesis>()
+            .ToTable("anamnesis")
+            .Property(a => a.Id).HasColumnName("id");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.PacienteId).HasColumnName("pacienteid");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.GradoInstruccion).HasColumnName("graduacioninstruccion");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.Religion).HasColumnName("religion");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.EstructuraFamiliar).HasColumnName("estructurafamiliar");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.Informante).HasColumnName("informante");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.Examinador).HasColumnName("examinador");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.FechaEntrevistaInicial).HasColumnName("fechaentrevistainicial");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.MotivoConsulta).HasColumnName("motivoconsulta");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.ProblemaActual).HasColumnName("problemaactual");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.ObservacionConducta).HasColumnName("observacionconducta");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.HistoriaFamiliarMadre).HasColumnName("historiafamiliarmadre");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.HistoriaFamiliarPadre).HasColumnName("historiafamiliarpadre");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.CreadoEn).HasColumnName("creadoen");
+
+        modelBuilder.Entity<Anamnesis>()
+            .Property(a => a.ActualizadoEn).HasColumnName("actualizadoen");
+
+        // Configurar la relación entre Anamnesis y Paciente (1 a 1)
+        modelBuilder.Entity<Anamnesis>()
+            .HasOne(a => a.Paciente)
+            .WithOne()
+            .HasForeignKey<Anamnesis>(a => a.PacienteId);
+
+        // Configurar Entity Framework para mapear la entidad Cita a la tabla 'citas' y sus columnas
+        modelBuilder.Entity<Cita>()
+            .ToTable("citas")
+            .Property(c => c.Id).HasColumnName("id");
+
+        modelBuilder.Entity<Cita>()
+            .Property(c => c.PacienteId).HasColumnName("pacienteid");
+
+        model.Entity<Cita>()
+            .Property(c => c.FechaHora).HasColumnName("fechahora");
+
+        model.Entity<Cita>()
+            .Property(c => c.Motivo).HasColumnName("motivo");
+
+        model.Entity<Cita>()
+            .Property(c => c.Estado).HasColumnName("estado");
+
+        model.Entity<Cita>()
+            .Property(c => c.CreadoEn).HasColumnName("creadoen");
+
+        model.Entity<Cita>()
+            .Property(c => c.ActualizadoEn).HasColumnName("actualizadoen");
+
+        // Configurar la relación entre Cita y Paciente
+        model.Entity<Cita>()
+            .HasOne(c => c.Paciente)
+            .WithMany()
+            .HasForeignKey(c => c.PacienteId);
     }
 }

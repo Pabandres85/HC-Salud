@@ -49,3 +49,45 @@ CREATE TABLE IF NOT EXISTS historiasclinicas (
 -- Crear índice para optimizar consultas por paciente
 CREATE INDEX IF NOT EXISTS idx_historiasclinicas_pacienteid ON historiasclinicas(pacienteid);
 CREATE INDEX IF NOT EXISTS idx_historiasclinicas_fechaconsulta ON historiasclinicas(fechaconsulta);
+
+-- Tabla para anamnesis inicial del paciente
+CREATE TABLE IF NOT EXISTS anamnesis (
+    id SERIAL PRIMARY KEY,
+    pacienteid INTEGER UNIQUE NOT NULL REFERENCES pacientes(id) ON DELETE CASCADE,
+    graduacioninstruccion VARCHAR(100),
+    religion VARCHAR(100),
+    estructurafamiliar TEXT,
+    informante VARCHAR(100),
+    examinador VARCHAR(100),
+    fechaentrevistainicial TIMESTAMP,
+    motivoconsulta TEXT,
+    problemaactual TEXT,
+    observacionconducta TEXT,
+    historiafamiliarmadre TEXT,
+    historiafamiliarpadre TEXT,
+    creadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    actualizadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear índice para la relación con pacientes (ya es UNIQUE PRIMARY KEY, pero un índice adicional puede ser útil)
+CREATE INDEX IF NOT EXISTS idx_anamnesis_pacienteid ON anamnesis(pacienteid);
+
+-- Añadir columna AnamnesisId a la tabla Pacientes para la relación 1 a 1 si es necesario (EF Core lo manejará con la FK en Anamnesis)
+-- ALTER TABLE Pacientes ADD COLUMN AnamnesisId INTEGER UNIQUE REFERENCES Anamnesis(Id);
+
+-- Asegurarse de que la relación en EF Core esté configurada para manejar la FK en Anamnesis
+
+-- Tabla para Citas
+CREATE TABLE IF NOT EXISTS Citas (
+    Id SERIAL PRIMARY KEY,
+    PacienteId INTEGER NOT NULL REFERENCES Pacientes(Id),
+    FechaHora TIMESTAMP NOT NULL,
+    Motivo TEXT,
+    Estado VARCHAR(50) NOT NULL DEFAULT 'programada',
+    CreadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ActualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear índice para optimizar consultas por paciente y fecha
+CREATE INDEX IF NOT EXISTS idx_citas_pacienteid ON Citas(PacienteId);
+CREATE INDEX IF NOT EXISTS idx_citas_fechahora ON Citas(FechaHora);
