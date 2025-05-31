@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+
 //using Npgsql.EntityFrameworkCore.PostgreSQL.Naming; // Eliminado: No necesario con EntityFrameworkCore.NamingConventions
 //using EntityFrameworkCore.NamingConventions; // Eliminado: Removimos la dependencia
 
@@ -30,6 +31,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PacienteService>();
 builder.Services.AddTransient<HistoriaClinicaService>();
 builder.Services.AddScoped<AnamnesisService>();
+builder.Services.AddScoped<CitaService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

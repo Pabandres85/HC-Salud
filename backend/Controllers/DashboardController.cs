@@ -14,11 +14,13 @@ namespace Backend.Controllers // Asegúrate de usar el namespace correcto de tus
     {
         private readonly PacienteService _pacienteService;
         private readonly HistoriaClinicaService _historiaClinicaService;
+        private readonly CitaService _citaService;
 
-        public DashboardController(PacienteService pacienteService, HistoriaClinicaService historiaClinicaService)
+        public DashboardController(PacienteService pacienteService, HistoriaClinicaService historiaClinicaService, CitaService citaService)
         {
             _pacienteService = pacienteService;
             _historiaClinicaService = historiaClinicaService;
+            _citaService = citaService;
         }
 
         [HttpGet("RecentActivity")]
@@ -87,7 +89,7 @@ namespace Backend.Controllers // Asegúrate de usar el namespace correcto de tus
                 
                 // TODO: Implementar la lógica para obtener las citas programadas para hoy.
                 // Esto requiere una entidad/tabla de Citas y un método en un servicio correspondiente.
-                var citasHoy = 0; // Placeholder: Reemplazar con la lógica real
+                var citasHoy = await _citaService.GetCitasForDateAsync(DateTime.Now);
 
                 return Ok(new { totalPacientes, consultasEsteMes, citasHoy });
             }

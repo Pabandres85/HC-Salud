@@ -179,23 +179,23 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Cita>()
             .Property(c => c.PacienteId).HasColumnName("pacienteid");
 
-        model.Entity<Cita>()
+        modelBuilder.Entity<Cita>()
             .Property(c => c.FechaHora).HasColumnName("fechahora");
 
-        model.Entity<Cita>()
+        modelBuilder.Entity<Cita>()
             .Property(c => c.Motivo).HasColumnName("motivo");
 
-        model.Entity<Cita>()
+        modelBuilder.Entity<Cita>()
             .Property(c => c.Estado).HasColumnName("estado");
 
-        model.Entity<Cita>()
+        modelBuilder.Entity<Cita>()
             .Property(c => c.CreadoEn).HasColumnName("creadoen");
 
-        model.Entity<Cita>()
+        modelBuilder.Entity<Cita>()
             .Property(c => c.ActualizadoEn).HasColumnName("actualizadoen");
 
         // Configurar la relación entre Cita y Paciente
-        model.Entity<Cita>()
+        modelBuilder.Entity<Cita>()
             .HasOne(c => c.Paciente)
             .WithMany()
             .HasForeignKey(c => c.PacienteId);

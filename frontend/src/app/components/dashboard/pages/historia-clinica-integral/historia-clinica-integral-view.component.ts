@@ -67,7 +67,7 @@ import { catchError, forkJoin, of, throwError } from 'rxjs';
             <tbody>
               <tr *ngFor="let historia of historiasClinicas">
                 <td>{{ historia.fechaConsulta | date:'dd/MM/yyyy' }}</td>
-                <td>{{ historia.subjetivo?.substring(0, 100) + (historia.subjetivo && historia.subjetivo.length > 100 ? '...' : '') }}</td>
+                <td>{{ historia.subjetivo.substring(0, 100) + (historia.subjetivo.length > 100 ? '...' : '') }}</td>
                 <td>
                   <button [routerLink]="['/dashboard/historias-clinicas', historia.id]" class="btn-link">Ver Detalle</button>
                    <!-- El enlace de edición de historia clínica ya existe en la lista de historias clínicas, podemos replicarlo si queremos aquí -->

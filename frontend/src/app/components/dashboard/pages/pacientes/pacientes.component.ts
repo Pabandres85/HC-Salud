@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Paciente, PacienteRequest, PacientesResponse } from '../../../../models/paciente.models';
 import { PacienteService } from '../../../../services/paciente.service';
 import { Router } from '@angular/router';
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'app-pacientes',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
     template: `
         <div class="card pacientes-main">
             <div class="pacientes-header">
@@ -49,9 +50,12 @@ import { Router } from '@angular/router';
                                 <button (click)="verHistoriasClinicas(paciente.id)" class="pacientes-btn-link">Notas de Progreso</button>
                                 <button (click)="verHistoriaClinicaIntegral(paciente.id)" class="pacientes-btn-link">Historia Clínica Integral</button>
                             </td>
+                            <td>
+                                <button [routerLink]="['/', 'dashboard', 'pacientes', paciente.id, 'citas']" class="pacientes-btn-link">Ver Citas</button>
+                            </td>
                         </tr>
                         <tr *ngIf="pacientes.length === 0">
-                            <td colspan="5" class="pacientes-vacio">No hay pacientes registrados</td>
+                            <td colspan="6" class="pacientes-vacio">No hay pacientes registrados</td>
                         </tr>
                     </tbody>
                 </table>

@@ -50,6 +50,23 @@ export const DASHBOARD_ROUTES: Routes = [
             {
                 path: 'historias-clinicas/:id',
                 loadComponent: () => import('./pages/historias-clinicas/historia-clinica-detail.component').then(m => m.HistoriaClinicaDetailComponent)
+            },
+            {
+                path: 'pacientes/:pacienteId/citas',
+                children: [
+                    {
+                        path: '',
+                        loadComponent: () => import('./pages/citas/cita-list.component').then(m => m.CitaListComponent)
+                    },
+                    {
+                        path: 'nueva',
+                        loadComponent: () => import('./pages/citas/cita-form.component').then(m => m.CitaFormComponent)
+                    },
+                    {
+                        path: ':citaId/editar',
+                        loadComponent: () => import('./pages/citas/cita-form.component').then(m => m.CitaFormComponent)
+                    }
+                ]
             }
         ]
     }
